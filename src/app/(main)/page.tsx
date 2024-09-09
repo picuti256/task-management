@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Login } from "../components/Login";
 import { BackgroundBeamsWithCollision } from "../components/ui/background-beams-with-collision";
 

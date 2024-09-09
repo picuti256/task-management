@@ -2,21 +2,21 @@
     {
       "firstName": "Giovanne",
       "lastName": "Piçuti",
-      "email": "gpicuti@example.com",
+      "email": "gpicuti@teste.com",
       "password": "password123",
       "controlLevel": 3
     },
     {
       "firstName": "Jane",
       "lastName": "Smith",
-      "email": "jane.smith@example.com",
+      "email": "jane.smith@teste.com",
       "password": "mypassword",
       "controlLevel": 2
     },
     {
         "firstName": "Williem",
         "lastName": "Dafoe",
-        "email": "greengoblin@example.com",
+        "email": "greengoblin@teste.com",
         "password": "miranha123",
         "controlLevel": 1
       }

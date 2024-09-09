@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
+import Alert from "../components/Toast";
 
 export const metadata: Metadata = {
   title: "Task Management",
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="h-screen">{children}</body>
+      <body className="h-screen w-screen">
+        <Alert />
+        {children}
+      </body>
     </html>
   );
 }

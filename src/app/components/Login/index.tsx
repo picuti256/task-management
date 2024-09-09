@@ -4,11 +4,10 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import users from "../../data/users.json";
-import { useRouter } from "next/router";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function Login() {
-  //   const router = useRouter();
+  const router = useRouter();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form submitted");
@@ -16,6 +15,19 @@ export function Login() {
 
     const email = data.get("email") as string;
     const password = data.get("password") as string;
+
+    const user = users.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (user) {
+      localStorage.setItem("firstName", user.firstName);
+      localStorage.setItem("lastName", user.lastName);
+
+      router.push("/home");
+    } else {
+      console.log("Usuário não encontrado.");
+    }
 
     console.log(email, password);
   };
