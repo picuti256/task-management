@@ -23,6 +23,8 @@ export function Login() {
     if (user) {
       localStorage.setItem("firstName", user.firstName);
       localStorage.setItem("lastName", user.lastName);
+      localStorage.setItem("controlLevel", user.controlLevel);
+      localStorage.setItem("userId", user.userId);
 
       router.push("/home");
     } else {
