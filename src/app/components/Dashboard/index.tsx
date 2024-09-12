@@ -1,10 +1,14 @@
-import Modal from "../Modal";
+"use client";
+import { useGlobalContext } from "@/context/GlobalContext";
+import Tasks from "../Tasks";
 
 const Dashboard = () => {
+  const { tasks } = useGlobalContext();
+
   return (
     <div className="flex flex-1">
-      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-neutral-900 text-white  flex flex-col gap-2 flex-1 w-full h-full">
-        <Modal />
+      <div className="px-10 bg-[#1c1c22] text-white flex flex-col gap-2 flex-1 w-full h-full">
+        <Tasks title="All Tasks" tasks={tasks} />
       </div>
     </div>
   );

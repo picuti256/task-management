@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  .h1 {
+    @apply text-[3rem] xl:text-[5rem] leading-[1.1] font-semibold;
+  }
+  .h2 {
+    @apply text-[2.25rem] xl:text-[3rem] leading-[1.1] font-semibold;
+  }
+  .h3 {
+    @apply text-[1.25rem] xl:text-[1.5rem] leading-[1.1] font-semibold;
+  }
+  .text-outline {
+    -webkit-text-stroke: 1px #ffffff;
+  }
+  .text-outline-hover {
+    -webkit-text-stroke: 1px #42a7ff;
+  }
+}
+
+.no-visible-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.no-visible-scrollbar::-webkit-scrollbar {
+  display: none;
+}

@@ -3,12 +3,21 @@ import users from "../../data/users.json";
 import { toast } from "react-toastify";
 import prisma from "@/utils/connect";
 
-const POST = async (req: Request) => {
+export async function POST(req: Request) {
   try {
-    const userId = localStorage.getItem("userId");
-    const controlLevel = localStorage.getItem("controlLevel");
-    const firstName = localStorage.getItem("firstName");
-    const lastName = localStorage.getItem("lastName");
+    const {
+      userId,
+      title,
+      description,
+      date,
+      important,
+      completed,
+      repository,
+      projectName,
+      firstName,
+      lastName,
+      controlLevel,
+    } = await req.json();
 
     const fullName = firstName + " " + lastName;
 
@@ -19,16 +28,6 @@ const POST = async (req: Request) => {
     if (controlLevel === "1") {
       return NextResponse.json({ error: "Unauthorized", status: 401 });
     }
-
-    const {
-      title,
-      description,
-      date,
-      important,
-      completed,
-      repository,
-      projectName,
-    } = await req.json();
 
     if (!title || !description || !date) {
       return NextResponse.json({
@@ -63,28 +62,24 @@ const POST = async (req: Request) => {
     console.log("ERROR CREATING TASK: ", error);
     return NextResponse.json({ error: "Error creating task", status: 500 });
   }
-};
+}
 
-const GET = async (req: Request) => {
+export async function GET(req: Request) {
   try {
+    const tasks = await prisma.task.findMany({});
+
+    return NextResponse.json(tasks)
   } catch (error) {
     console.log("ERROR GETING TASK: ", error);
     return NextResponse.json({ error: "Error geting task", status: 500 });
   }
-};
+}
 
-const PUT = async (req: Request) => {
+export async function PUT(req: Request) {
   try {
   } catch (error) {
     console.log("ERROR UPDATING TASK: ", error);
     return NextResponse.json({ error: "Error updating task", status: 500 });
   }
-};
+}
 
-const DELETE = async (req: Request) => {
-  try {
-  } catch (error) {
-    console.log("ERROR DELETING TASK: ", error);
-    return NextResponse.json({ error: "Error deleting task", status: 500 });
-  }
-};

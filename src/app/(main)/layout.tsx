@@ -1,24 +1,20 @@
-import type { Metadata } from "next";
+"use client";
+import { Toaster } from "react-hot-toast";
 import "../globals.css";
-import Alert from "../components/Toast";
-
-export const metadata: Metadata = {
-  title: "Task Management",
-  description:
-    "An application for controlling tasks in projects. With this app, you can take projects from GitHub and thus create a control for tasks within each project.",
-};
+import Header from "../components/Header";
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const path = usePathname();
   return (
-    <html lang="en">
-      <body className="h-screen w-screen">
-        <Alert />
-        {children}
-      </body>
-    </html>
+    <div className={`h-screen bg-primary text-white font-primary`}>
+      <Toaster />
+      {path !== "/login" && <Header />}
+      {children}
+    </div>
   );
 }
