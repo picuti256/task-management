@@ -9,13 +9,9 @@ const Home = () => {
   const { tasks } = useGlobalContext();
 
   return (
-    <GlobalProvider>
-      <ModalProvider>
-        <div className="h-full w-full items-center justify-between">
-          <Tasks title="All Tasks" tasks={tasks} />
-        </div>
-      </ModalProvider>
-    </GlobalProvider>
+    <div className="h-full w-full items-center justify-between">
+      <Tasks title="All Tasks" tasks={tasks} />
+    </div>
   );
 };
 

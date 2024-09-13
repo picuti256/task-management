@@ -1,10 +1,10 @@
-// context/GlobalContext.tsx
 import {
   createContext,
   useContext,
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { Task } from "@prisma/client";
 import axios from "axios";
@@ -14,11 +14,12 @@ import { usePathname, useRouter } from "next/navigation";
 interface GlobalContextProps {
   tasks: Task[] | null;
   isLoading: boolean;
-  fetchTasks: () => Promise<void>;
+  allTasks: () => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   completedTasks: Task[] | undefined;
   importantTasks: Task[] | undefined;
   incompletedTasks: Task[] | undefined;
+  progressTask: (task: any) => Promise<void>;
 }
 
 const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
@@ -44,17 +45,19 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const fetchTasks = async () => {
+  const allTasks = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await axios.get("/api/tasks");
+      console.log("Tasks fetched: ", res.data);
       setTasks(res.data);
-      setIsLoading(false);
     } catch (error) {
-      console.error("Error to retrieve the tasks: ", error);
-      toast.error("Somenthing went wrong");
+      console.error("Error retrieving the tasks: ", error);
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
   const deleteTask = async (id: any) => {
     const controlLevel = localStorage.getItem("controlLevel");
@@ -67,10 +70,28 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
       const res = await axios.delete(`/api/tasks/${id}`);
       toast.success("Task deleted");
 
-      fetchTasks();
+      await allTasks();
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
+    }
+  };
+
+  const progressTask = async (task: any) => {
+    try {
+      const res = await axios.put(`/api/tasks`, task);
+      const { isCompleted, isProgress } = res.data;
+
+      if (isCompleted) {
+        toast.success("Task completed.");
+      }
+      if (isProgress) {
+        toast.success("Task started.");
+      }
+      await allTasks();
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wront.");
     }
   };
 
@@ -85,7 +106,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     tasks?.filter((task) => task.isCompleted === false) || [];
 
   useEffect(() => {
-    fetchTasks();
+    allTasks();
   }, []);
 
   useEffect(() => {
@@ -97,11 +118,12 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
       value={{
         tasks,
         isLoading,
-        fetchTasks,
+        allTasks,
         deleteTask,
         completedTasks,
         importantTasks,
         incompletedTasks,
+        progressTask,
       }}
     >
       {children}

@@ -35,7 +35,12 @@ const TaskItem: React.FC<TasksProps> = ({
   userId,
   index,
 }) => {
-  const { deleteTask } = useGlobalContext();
+  const { deleteTask, progressTask } = useGlobalContext();
+
+  const today = new Date();
+  const prazoFinal = new Date(date);
+
+  const delayed = true ? prazoFinal < today : false;
 
   return (
     <div
@@ -56,7 +61,11 @@ const TaskItem: React.FC<TasksProps> = ({
         </p>
         <div className="flex flex-col gap-2">
           <p className="text-xs text-accent px-10">{user}</p>
-          <p className="text-xs text-[#c97979] px-10">{formatDate(date)}</p>
+          {delayed ? (
+            <p className="text-xs text-[#c97979] px-10">{formatDate(date)}</p>
+          ) : (
+            <p className="text-xs text-accent-hover px-10">{formatDate(date)}</p>
+          )}
         </div>
       </div>
       <div className="flex justify-between items-center mt-4 px-10">
@@ -68,7 +77,17 @@ const TaskItem: React.FC<TasksProps> = ({
           </button>
         )}
         {!isProgress && !isCompleted && (
-          <button className="p-[3px] relative">
+          <button
+            className="p-[3px] relative"
+            onClick={() => {
+              const task = {
+                id,
+                isCompleted,
+                isProgress,
+              };
+              progressTask(task);
+            }}
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-gray-500 to-slate-500 rounded-lg" />
             <div className="px-4 py-1 bg-black rounded-[6px] text-sm relative group transition duration-200 text-white hover:bg-transparent">
               Await
@@ -76,7 +95,17 @@ const TaskItem: React.FC<TasksProps> = ({
           </button>
         )}
         {isProgress && (
-          <button className="p-[3px] relative">
+          <button
+            className="p-[3px] relative"
+            onClick={() => {
+              const task = {
+                id,
+                isCompleted,
+                isProgress,
+              };
+              progressTask(task);
+            }}
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-[#3D4FF5] rounded-lg" />
             <div className="px-1 py-1 bg-black rounded-[6px] text-sm relative group transition duration-200 text-white hover:bg-transparent">
               In Progress

@@ -6,7 +6,6 @@ import TaskItem from "../TaskItem";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { helix } from "ldrs";
 import { usePathname } from "next/navigation";
-import NoNewTask from "../NoNewTask";
 
 interface Props {
   title: string;
@@ -23,7 +22,7 @@ const Tasks: React.FC<Props> = ({ title, tasks }) => {
         <h1 className="text-2xl font-bold">{title}</h1>
         {path === "/" && <FormModal />}
       </div>
-      {tasks.length === 0 && path === "/" && (
+      {tasks.length === 0 && path === "/" && !isLoading && (
         <div className="flex w-1/4 py-10 bg-[#232329] rounded-xl px-6">
           <p>
             <span className="font-bold">No task created.</span> <br /> Please
@@ -31,7 +30,11 @@ const Tasks: React.FC<Props> = ({ title, tasks }) => {
           </p>
         </div>
       )}
-      {!isLoading ? (
+      {isLoading ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <l-helix size="100" speed="2.5" color="purple"></l-helix>
+        </div>
+      ) : (
         <ScrollArea className="h-[40rem] pt-5">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {tasks.map((task, index) => (
@@ -53,10 +56,6 @@ const Tasks: React.FC<Props> = ({ title, tasks }) => {
             ))}
           </div>
         </ScrollArea>
-      ) : (
-        <div className="w-full h-full flex items-center justify-center">
-          <l-helix size="100" speed="2.5" color="purple"></l-helix>
-        </div>
       )}
     </section>
   );

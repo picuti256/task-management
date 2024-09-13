@@ -33,6 +33,7 @@ import { Input, Textarea } from "@nextui-org/input";
 import { DatePicker } from "@nextui-org/date-picker";
 import { parseDate } from "@internationalized/date";
 import usersData from "../../data/users.json";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 type Project = {
   id: number;
@@ -46,6 +47,8 @@ type User = {
 };
 
 const FormModal = () => {
+  const { allTasks } = useGlobalContext();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -56,7 +59,6 @@ const FormModal = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [users, setUsers] = useState<User[]>([]);
-  const [selectUser, setSelectUser] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
 
@@ -78,6 +80,7 @@ const FormModal = () => {
         (user) => user.user === e.target.value
       );
       setSelectedUser(e.target.value);
+
       if (selectedUser) {
         setSelectedUserId(selectedUser.userId);
       }
@@ -97,9 +100,6 @@ const FormModal = () => {
           break;
         case "important":
           setImportant(e.target.checked);
-          break;
-        case "user":
-          setUsers(e.targe.value);
           break;
         default:
           break;
@@ -122,7 +122,7 @@ const FormModal = () => {
     fetchProjects();
   }, [API_GITHUB]);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: any, onClose: () => void) => {
     e.preventDefault();
 
     const task = {
@@ -133,20 +133,22 @@ const FormModal = () => {
       completed,
       repository,
       projectName,
-      userId: localStorage.getItem("userId"),
+      userId: selectedUserId,
+      user: selectedUser,
       controlLevel: localStorage.getItem("controlLevel"),
-      firstName: localStorage.getItem("firstName"),
-      lastName: localStorage.getItem("lastName"),
     };
 
     try {
       const res = await axios.post("/api/tasks", task);
 
       if (res.data.error) {
+        console.log(res.data.error);
         toast.error(res.data.error);
+      } else {
+        toast.success("Task created successfully.");
+        onClose();
+        await allTasks();
       }
-
-      toast.success("Task created successfully.");
     } catch (error) {
       toast.error("Something went wrong.");
       console.log(error);
@@ -155,7 +157,7 @@ const FormModal = () => {
 
   return (
     <>
-      <Button onPress={onOpen} color="primary">
+      <Button onPress={onOpen} className="bg-accent font-bold">
         Create a new task
       </Button>
       <Modal
@@ -163,79 +165,106 @@ const FormModal = () => {
         onOpenChange={onOpenChange}
         placement="top-center"
         backdrop="blur"
-        size="xl"
+        size="lg"
       >
-        <ModalContent className="bg-neutral-400 px-4 flex flex-col gap-2 items-center">
+        <ModalContent className="bg-primary pt-2 text-white flex flex-col gap-2 items-center">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col">
                 Fill in all the informations for the task
               </ModalHeader>
               <form
                 id="task-form"
-                className="text-black w-96 flex flex-col gap-2"
-                onSubmit={handleSubmit}
+                className="text-black w-96 flex flex-col gap-2 py-5"
+                onSubmit={(e) => handleSubmit(e, onClose)}
               >
-                <div className="input-control">
-                  <Input
+                <div className="relativefont-semibold ">
+                  <label
+                    htmlFor="title"
+                    className="mb-2 display inline-block text-white"
+                  >
+                    Title
+                  </label>
+                  <input
                     type="text"
-                    isRequired
-                    label="Title of the task"
+                    placeholder="Title of the task"
                     id="title"
                     value={title}
                     name="title"
                     onChange={handleChange("title")}
+                    className="w-full p-2 bg-slate-100 rounded-lg"
                   />
                 </div>
-                <div className="input-control">
-                  <Textarea
+                <div className="relative mt-2 font-semibold ">
+                  <label
+                    htmlFor="title"
+                    className="mb-2 display inline-block text-white"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    rows={4}
                     id="description"
-                    label="Description"
                     value={description}
                     name="description"
                     onChange={handleChange("description")}
                     placeholder="Brief description of the task"
-                    minRows={2}
-                    isRequired
+                    className="w-full p-2 bg-slate-100 rounded-lg"
                   />
                 </div>
-                <div className="input-control">
+                <div className="relative mt-4 font-semibold ">
+                  <label
+                    htmlFor="date"
+                    className="mb-2 display inline-block text-white"
+                  >
+                    Date limit
+                  </label>
                   <input
                     type="date"
                     id="date"
                     value={date}
                     name="date"
                     onChange={handleChange("date")}
+                    className="w-full p-2 bg-slate-100 rounded-lg"
                   />
                 </div>
-                <div className="input-control">
+                <div className="relative mt-2 font-semibold ">
+                  <label
+                    htmlFor="important"
+                    className="mb-2 display inline-block text-white"
+                  >
+                    Important
+                  </label>
                   <Checkbox
-                    color="danger"
+                    color="success"
                     name="important"
                     checked={important}
                     onChange={handleChange("important")}
                     id="important"
-                  >
-                    Important
-                  </Checkbox>
-                </div>
-                <div className="input-control">
-                  <input
-                    type="text"
-                    hidden
-                    id="repository"
-                    value={repository}
-                    name="repository"
-                    readOnly
+                    className="w-full p-4"
                   />
                 </div>
-                <div className="input-control">
-                  <label htmlFor="projectName">Project</label>
+                <input
+                  type="text"
+                  hidden
+                  id="repository"
+                  value={repository}
+                  name="repository"
+                  readOnly
+                />
+                <div className="relative mt-2 font-semibold ">
+                  <label
+                    htmlFor="projectName"
+                    className="mb-2 display inline-block text-white"
+                  >
+                    Project
+                  </label>
                   <select
                     id="projectName"
                     value={projectName}
                     name="projectName"
                     onChange={handleChange("projectName")}
+                    className="w-full p-2 bg-slate-100 rounded-lg "
                   >
                     <option value="">Select a project</option>
                     {projects.map((project) => (
@@ -245,13 +274,19 @@ const FormModal = () => {
                     ))}
                   </select>
                 </div>
-                <div className="input-control">
-                  <label htmlFor="user">User</label>
+                <div className="relative mt-2 font-semibold ">
+                  <label
+                    htmlFor="user"
+                    className="mb-2 display inline-block text-white"
+                  >
+                    User
+                  </label>
                   <select
                     id="user"
                     value={selectedUser}
                     name="user"
                     onChange={handleChange("user")}
+                    className="w-full p-2 bg-slate-100 rounded-lg "
                   >
                     <option value="">Select a user</option>
                     {usersData.map((user) => (
@@ -268,7 +303,11 @@ const FormModal = () => {
                   name="userId"
                   readOnly
                 />
-                <Button type="submit" color="success" onPress={onClose}>
+                <Button
+                  type="submit"
+                  color="success"
+                  className="font-bold mt-4"
+                >
                   Create
                 </Button>
               </form>
