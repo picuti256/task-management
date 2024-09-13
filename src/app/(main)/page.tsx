@@ -1,20 +1,21 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { SidebarMenu } from "@/app/components/Sidebar";
-import Dashboard from "@/app/components/Dashboard";
-import { GlobalProvider } from "@/context/GlobalContext";
+import React from "react";
+import { GlobalProvider, useGlobalContext } from "@/context/GlobalContext";
 import { ModalProvider } from "../components/ui/animated-modal";
+import Tasks from "../components/Tasks";
+import NoNewTask from "../components/NoNewTask";
 
 const Home = () => {
+  const { tasks } = useGlobalContext();
+
   return (
-    <div className="flex flex-col md:flex-row ">
-      <GlobalProvider>
-        <ModalProvider>
-          <Dashboard />
-        </ModalProvider>
-      </GlobalProvider>
-    </div>
+    <GlobalProvider>
+      <ModalProvider>
+        <div className="h-full w-full items-center justify-between">
+          <Tasks title="All Tasks" tasks={tasks} />
+        </div>
+      </ModalProvider>
+    </GlobalProvider>
   );
 };
 

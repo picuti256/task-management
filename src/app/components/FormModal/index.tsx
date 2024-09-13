@@ -32,11 +32,17 @@ import { Checkbox } from "@nextui-org/checkbox";
 import { Input, Textarea } from "@nextui-org/input";
 import { DatePicker } from "@nextui-org/date-picker";
 import { parseDate } from "@internationalized/date";
+import usersData from "../../data/users.json";
 
 type Project = {
   id: number;
   name: string;
   svn_url: string;
+};
+
+type User = {
+  userId: string;
+  user: string;
 };
 
 const FormModal = () => {
@@ -49,6 +55,10 @@ const FormModal = () => {
   const [projectName, setProjectName] = useState("");
   const [projects, setProjects] = useState<Project[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectUser, setSelectUser] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
 
   const API_GITHUB = process.env.NEXT_PUBLIC_API_GITHUB;
 
@@ -62,6 +72,14 @@ const FormModal = () => {
 
       if (selectedProject) {
         setRepository(selectedProject.svn_url);
+      }
+    } else if (name === "user") {
+      const selectedUser = usersData.find(
+        (user) => user.user === e.target.value
+      );
+      setSelectedUser(e.target.value);
+      if (selectedUser) {
+        setSelectedUserId(selectedUser.userId);
       }
     } else {
       switch (name) {
@@ -79,6 +97,9 @@ const FormModal = () => {
           break;
         case "important":
           setImportant(e.target.checked);
+          break;
+        case "user":
+          setUsers(e.targe.value);
           break;
         default:
           break;
@@ -224,7 +245,30 @@ const FormModal = () => {
                     ))}
                   </select>
                 </div>
-                <Button type="submit" color="success">
+                <div className="input-control">
+                  <label htmlFor="user">User</label>
+                  <select
+                    id="user"
+                    value={selectedUser}
+                    name="user"
+                    onChange={handleChange("user")}
+                  >
+                    <option value="">Select a user</option>
+                    {usersData.map((user) => (
+                      <option key={user.userId} value={user.user}>
+                        {user.user}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <input
+                  type="hidden"
+                  id="userId"
+                  value={selectedUserId}
+                  name="userId"
+                  readOnly
+                />
+                <Button type="submit" color="success" onPress={onClose}>
                   Create
                 </Button>
               </form>

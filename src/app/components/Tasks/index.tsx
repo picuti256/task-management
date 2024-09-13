@@ -1,10 +1,12 @@
-"use client"
+"use client";
 
 import { ScrollArea } from "@/app/components/ui/scroll-area";
 import FormModal from "../FormModal";
 import TaskItem from "../TaskItem";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { helix } from "ldrs";
+import { usePathname } from "next/navigation";
+import NoNewTask from "../NoNewTask";
 
 interface Props {
   title: string;
@@ -13,16 +15,24 @@ interface Props {
 
 const Tasks: React.FC<Props> = ({ title, tasks }) => {
   const { isLoading } = useGlobalContext();
-
+  const path = usePathname();
 
   return (
-    <section className="py-10 w-full mx-auto h-full">
+    <section className="py-10 w-full mx-auto px-8">
       <div className="flex flex-row justify-between">
         <h1 className="text-2xl font-bold">{title}</h1>
-        <FormModal />
+        {path === "/" && <FormModal />}
       </div>
+      {tasks.length === 0 && path === "/" && (
+        <div className="flex w-1/4 py-10 bg-[#232329] rounded-xl px-6">
+          <p>
+            <span className="font-bold">No task created.</span> <br /> Please
+            create a new task.
+          </p>
+        </div>
+      )}
       {!isLoading ? (
-        <ScrollArea className="h-[50rem]">
+        <ScrollArea className="h-[40rem] pt-5">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {tasks.map((task, index) => (
               <TaskItem
@@ -37,6 +47,8 @@ const Tasks: React.FC<Props> = ({ title, tasks }) => {
                 isImportant={task.isImportant}
                 projectName={task.projectName}
                 index={index}
+                user={task.user}
+                userId={task.userId}
               />
             ))}
           </div>

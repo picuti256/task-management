@@ -17,6 +17,8 @@ interface TasksProps {
   repository: string;
   projectName: string;
   index: number;
+  user: string;
+  userId: string;
 }
 
 const TaskItem: React.FC<TasksProps> = ({
@@ -29,14 +31,15 @@ const TaskItem: React.FC<TasksProps> = ({
   isImportant,
   repository,
   projectName,
+  user,
+  userId,
   index,
 }) => {
   const { deleteTask } = useGlobalContext();
 
-
   return (
     <div
-      className={`flex flex-col py-6 rounded-lg justify-between group task-card bg-[#232329]`}
+      className={`flex flex-col gap-2 py-6 rounded-lg justify-between group task-card bg-[#232329]`}
     >
       <div className="group-hover:opacity-100 transition duration-200 absolute inset-0 h-full w-full  to-transparent pointer-events-none" />
       <div className={`text-lg font-bold mb-2 px-10 `}>
@@ -51,7 +54,10 @@ const TaskItem: React.FC<TasksProps> = ({
         <p className="text-sm text-[#AEBFBE] max-w-xs break-words px-10">
           {description}
         </p>
-        <p className="text-xs text-[#c97979] px-10">{formatDate(date)}</p>
+        <div className="flex flex-col gap-2">
+          <p className="text-xs text-accent px-10">{user}</p>
+          <p className="text-xs text-[#c97979] px-10">{formatDate(date)}</p>
+        </div>
       </div>
       <div className="flex justify-between items-center mt-4 px-10">
         {isCompleted && (

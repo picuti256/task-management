@@ -3,7 +3,7 @@ import { BackgroundBeamsWithCollision } from "@/app/components/ui/background-bea
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center align-middle h-full">
+    <div className="flex flex-col items-center align-middle h-screen">
       <BackgroundBeamsWithCollision>
         <Login />
       </BackgroundBeamsWithCollision>

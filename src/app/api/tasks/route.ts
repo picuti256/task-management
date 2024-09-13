@@ -77,6 +77,9 @@ export async function GET(req: Request) {
 
 export async function PUT(req: Request) {
   try {
+    const {isCompleted, id, controlLevel, userId} = await req.json();
+
+
   } catch (error) {
     console.log("ERROR UPDATING TASK: ", error);
     return NextResponse.json({ error: "Error updating task", status: 500 });

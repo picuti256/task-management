@@ -16,6 +16,9 @@ interface GlobalContextProps {
   isLoading: boolean;
   fetchTasks: () => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
+  completedTasks: Task[] | undefined;
+  importantTasks: Task[] | undefined;
+  incompletedTasks: Task[] | undefined;
 }
 
 const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
@@ -46,7 +49,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await axios.get("/api/tasks");
       setTasks(res.data);
-      console.log(res.data)
       setIsLoading(false);
     } catch (error) {
       console.error("Error to retrieve the tasks: ", error);
@@ -72,10 +74,15 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const completedTasks =
+    tasks?.filter((task) => task.isCompleted === true) || [];
 
-  const completedTasks = tasks?.filter((task) => task.isCompleted === true);
+  const importantTasks = tasks?.filter(
+    (task) => task.isImportant === true || []
+  );
 
-  console.log(completedTasks)
+  const incompletedTasks =
+    tasks?.filter((task) => task.isCompleted === false) || [];
 
   useEffect(() => {
     fetchTasks();
@@ -87,7 +94,15 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <GlobalContext.Provider
-      value={{ tasks, isLoading, fetchTasks, deleteTask }}
+      value={{
+        tasks,
+        isLoading,
+        fetchTasks,
+        deleteTask,
+        completedTasks,
+        importantTasks,
+        incompletedTasks,
+      }}
     >
       {children}
     </GlobalContext.Provider>

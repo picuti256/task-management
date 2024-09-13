@@ -1,7 +1,15 @@
-"use client"
+"use client";
+
+import Tasks from "@/app/components/Tasks";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 const Done = () => {
-    return <p>Oi</p>
-}
+  const { completedTasks } = useGlobalContext();
+  return (
+    <div className="h-full w-full items-center justify-between">
+      <Tasks title="Completed Tasks" tasks={completedTasks} />
+    </div>
+  );
+};
 
 export default Done;

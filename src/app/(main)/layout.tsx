@@ -3,6 +3,7 @@ import { Toaster } from "react-hot-toast";
 import "../globals.css";
 import Header from "../components/Header";
 import { usePathname } from "next/navigation";
+import { GlobalProvider } from "@/context/GlobalContext";
 
 export default function RootLayout({
   children,
@@ -11,10 +12,12 @@ export default function RootLayout({
 }>) {
   const path = usePathname();
   return (
-    <div className={`h-screen bg-primary text-white font-primary`}>
-      <Toaster />
-      {path !== "/login" && <Header />}
-      {children}
-    </div>
+    <GlobalProvider>
+      <div className={`bg-primary text-white font-primary`}>
+        <Toaster />
+        {path !== "/login" && <Header />}
+        {children}
+      </div>
+    </GlobalProvider>
   );
 }

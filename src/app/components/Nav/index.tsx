@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PiSignOutFill } from "react-icons/pi";
 
 interface links {
   name: string;
   path: string;
   onClick?: () => void;
+  icon?: any;
 }
 
 const links: links[] = [
@@ -37,7 +39,19 @@ const Nav = () => {
   return (
     <nav className="flex gap-8">
       {links.map((link, index) => {
-        return (
+        return link.name === "logout" ? (
+          <Link
+            href={link.path}
+            key={index}
+            className={`${
+              link.path === pathname && "text-accent border-b-2 border-accent"
+            } capitalize font-medium hover:text-accent-hover items-center flex gap-3 transition-all pl-16`}
+            onClick={link.onClick}
+          >
+            {link.name}
+            <PiSignOutFill />
+          </Link>
+        ) : (
           <Link
             href={link.path}
             key={index}

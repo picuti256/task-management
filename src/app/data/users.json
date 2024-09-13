@@ -3,6 +3,7 @@
     "userId": "1",
     "firstName": "Giovanne",
     "lastName": "Piçuti",
+    "user": "Giovanne Piçuti",
     "email": "gpicuti@teste.com",
     "password": "password123",
     "controlLevel": "3"
@@ -11,6 +12,7 @@
     "userId": "2",
     "firstName": "Jane",
     "lastName": "Smith",
+    "user": "Jane Smith",
     "email": "jane.smith@teste.com",
     "password": "mypassword",
     "controlLevel": "2"
@@ -19,6 +21,7 @@
     "userId": "3",
     "firstName": "Williem",
     "lastName": "Dafoe",
+    "user": "Williem Dafoe",
     "email": "greengoblin@teste.com",
     "password": "miranha123",
     "controlLevel": "1"
