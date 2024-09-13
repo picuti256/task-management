@@ -3,7 +3,7 @@
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { FaGithub } from "react-icons/fa";
 import { Button } from "@nextui-org/button";
-import formatDate from "@/app/utils/formateDate";
+import formatDate from "@/utils/formateDate";
 import { useGlobalContext } from "@/context/GlobalContext";
 
 interface TasksProps {
@@ -64,7 +64,9 @@ const TaskItem: React.FC<TasksProps> = ({
           {delayed ? (
             <p className="text-xs text-[#c97979] px-10">{formatDate(date)}</p>
           ) : (
-            <p className="text-xs text-accent-hover px-10">{formatDate(date)}</p>
+            <p className="text-xs text-accent-hover px-10">
+              {formatDate(date)}
+            </p>
           )}
         </div>
       </div>
@@ -113,9 +115,6 @@ const TaskItem: React.FC<TasksProps> = ({
           </button>
         )}
         <div className="flex gap-2 hover:text-white ">
-          <button>
-            <CiEdit />
-          </button>
           <button
             className="text-red-500"
             onClick={() => {

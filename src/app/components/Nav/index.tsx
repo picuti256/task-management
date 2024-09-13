@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PiSignOutFill } from "react-icons/pi";
+import { useEffect, useState } from "react";
 
 interface links {
   name: string;
@@ -10,7 +11,7 @@ interface links {
   icon?: any;
 }
 
-const links: links[] = [
+const allLinks: links[] = [
   {
     name: "All tasks",
     path: "/",
@@ -28,6 +29,10 @@ const links: links[] = [
     path: "/done",
   },
   {
+    name: "Analytics",
+    path: "/dashboard",
+  },
+  {
     name: "logout",
     path: "/login",
     onClick: () => localStorage.clear(),
@@ -36,9 +41,23 @@ const links: links[] = [
 
 const Nav = () => {
   const pathname = usePathname();
+  const [controlLevel, setControlLevel] = useState<string | null>(null);
+
+  useEffect(() => {
+    const level = localStorage.getItem("controlLevel");
+    setControlLevel(level);
+  }, []);
+
+  const filteredLinks = allLinks.filter((link) => {
+    if (link.name === "Analytics" && controlLevel !== "3") {
+      return false;
+    }
+    return true;
+  });
+
   return (
     <nav className="flex gap-8">
-      {links.map((link, index) => {
+      {filteredLinks.map((link, index) => {
         return link.name === "logout" ? (
           <Link
             href={link.path}

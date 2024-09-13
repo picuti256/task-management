@@ -49,7 +49,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const res = await axios.get("/api/tasks");
-      console.log("Tasks fetched: ", res.data);
       setTasks(res.data);
     } catch (error) {
       console.error("Error retrieving the tasks: ", error);
