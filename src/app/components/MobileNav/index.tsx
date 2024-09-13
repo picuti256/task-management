@@ -4,15 +4,18 @@ import { usePathname } from "next/navigation";
 
 import Link from "next/link";
 import { CiMenuFries } from "react-icons/ci";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { PiSignOutFill } from "react-icons/pi";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 
 interface links {
   name: string;
   path: string;
+  onClick?: () => void;
+  icon?: any;
 }
 
-const links: links[] = [
+const allLinks: links[] = [
   {
     name: "All tasks",
     path: "/",
@@ -33,11 +36,30 @@ const links: links[] = [
     name: "Dashbord",
     path: "/dashboard",
   },
+  {
+    name: "logout",
+    path: "/login",
+    onClick: () => localStorage.clear(),
+  },
 ];
 
 const MobileNav = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
   const pathname = usePathname();
+  const [controlLevel, setControlLevel] = useState<string | null>(null);
+
+  useEffect(() => {
+    const level = localStorage.getItem("controlLevel");
+    setControlLevel(level);
+  }, []);
+
+  const filteredLinks = allLinks.filter((link) => {
+    if (link.name === "Analytics" && controlLevel !== "3") {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <Sheet>
@@ -53,7 +75,7 @@ const MobileNav = () => {
           </Link>
         </div>
         <nav className=" flex flex-col justify-center items-center gap-8">
-          {links.map((link, index) => {
+          {filteredLinks.map((link, index) => {
             return (
               <SheetClose asChild key={index}>
                 <Link
